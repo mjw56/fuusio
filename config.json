@@ -1,4 +1,9 @@
 {
+  "author": "Blog Author",
   "title": "My Blog",
-  "posts": {}
+  "posts": {},
+  "stylesheet": "plain",
+  "stylesheetOptions": [
+    "plain"
+  ]
 }
