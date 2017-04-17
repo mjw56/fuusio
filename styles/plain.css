@@ -81,10 +81,24 @@ body {
 }
 
 .post main > article img {
-  width: 100%;
+  width: 100%; 
 }
 
-.post main > article > section {
+.post main > article .post-body {
   text-align: left
+}
+
+.post main > article .post-header {
+  text-align: left;
+}
+
+.post main > article .post-header h1,
+.post main > article .post-header h6 {
+  margin: 0;
+}
+
+.post main > article .post-hader h6 {
+  font-weight: 300;
+  font-style: italic;
 }
 /* End Post Page */
