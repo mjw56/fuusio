@@ -22,7 +22,7 @@
       <article role="article">
         <section aria-live="assertive" aria-atomic="true" class="post-header">
           <h1>Lightweight GitHub OAuth for Starters</h1>
-          <h6>April 18, 2017</h6>
+          <h6></h6>
         </section>
 
         <section aria-live="assertive" aria-atomic="true" class="post-body">
@@ -57,7 +57,7 @@ yarn init
 <pre><code class="sh language-sh">yarn add express
 </code></pre>
 <p>Easy peasy! Now, let's stay with the server and let's setup the code that will be needed to serve a static html page and accept requests from the client:</p>
-<p><code>index.js</code>:</p>
+<p><strong><em>index.js</em></strong>:</p>
 <pre><code class="js language-js">const http = require('http');
 const https = require('https');
 const express = require('express');
@@ -71,11 +71,11 @@ const server = http.createServer(app);
 
 server.listen(port, () =&gt; {
   console.log(`==&gt; Server is listening on port ${port}`);
-  console.log(`==&gt; 🌎  Go to localhost:${port}`);
+  console.log(`==&gt; ð  Go to localhost:${port}`);
 });
 </code></pre>
 <p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
-<p><code>index.html</code>:</p>
+<p><strong><em>index.html</em></strong>:</p>
 <pre><code class="html language-html">&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
   &lt;head&gt;
