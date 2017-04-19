@@ -99,13 +99,6 @@ body {
   font-size: 10px;
 }
 
-.post main > article .post-body code {
-  background-color: lightgray;
-  border-radius: 2px;
-  padding: 1px;
-  font-size: 12px;
-}
-
 .post main > article .post-header {
   text-align: left;
 }
