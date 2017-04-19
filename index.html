@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="author" content="Your Name Goes Here">
+    <meta name="author" content="Mike Wilcox">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">    
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,9 +21,17 @@
     <main role="main">
       <section>
         <ul>
-          <li>There are no posts yet.</li>
+            <li onclick="goTo('posts/2017-04-19-lightweight-github-oauth-for-starters/index.html')" role="link">
+              Lightweight GitHub OAuth for Starters
+            </li>
         </ul>
       </section>
     </main>
+
+    <script>
+      function goTo(route) {
+        window.location = `${window.location.href}${route}`;
+      }
+    </script>
   </body>
 </html>

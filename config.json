@@ -1,9 +1,15 @@
 {
-  "author": "Blog Author",
-  "title": "My Blog",
-  "posts": {},
-  "stylesheet": "plain",
-  "stylesheetOptions": [
-    "plain"
-  ]
+	"author": "Blog Author",
+	"title": "My Blog",
+	"posts": {
+		"2017-04-19-lightweight-github-oauth-for-starters": {
+			"title": "Lightweight GitHub OAuth for Starters",
+			"slug": "2017-04-19-lightweight-github-oauth-for-starters",
+			"cover": ""
+		}
+	},
+	"stylesheet": "plain",
+	"stylesheetOptions": [
+		"plain"
+	]
 }

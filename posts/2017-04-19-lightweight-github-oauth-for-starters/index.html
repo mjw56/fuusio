@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Mike Wilcox">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+
+    <title>Lightweight GitHub OAuth for Starters</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/themes/prism-okaidia.min.css">
+    <link rel="stylesheet" href="../../styles/plain.css">
+  </head>
+  <body class="post">
+    <header role="banner">
+      <a href="/">< Home</a>
+    </header>
+
+    <main role="main">
+      <article role="article">
+        <section aria-live="assertive" aria-atomic="true" class="post-header">
+          <h1>Lightweight GitHub OAuth for Starters</h1>
+          <h6>April 18, 2017</h6>
+        </section>
+
+        <section aria-live="assertive" aria-atomic="true" class="post-body">
+          <p><em>Note: This post is geared towards developers who may not have much experience with implementing an OAuth workflow using GitHub before. This will walk through my implementation of the workflow.</em> </p>
+<p>During this post, these technologies will be covered:</p>
+<ul>
+<li>JavaScript</li>
+<li>NodeJS and yarn</li>
+<li>HTML</li>
+</ul>
+<p>If you're not comfortable yet with these technologies here are some links which might help you getting started:</p>
+<ul>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML">Intro to HTML</a></p></li>
+<li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Introduction">Intro to JavaScript</a></p></li>
+<li><p><a href="http://nodeguide.com/beginner.html">nodeguide</a></p></li>
+</ul>
+<p>This post also assumes two things:</p>
+<ul>
+<li><p>that you have a GitHub account, if you don't have one, you should sign up! It is free! <a href="https://help.github.com/articles/signing-up-for-a-new-github-account/">GitHub Sign Up</a></p></li>
+<li><p>that you are comfortable working in a command line terminal to use NodeJS/git ( if you're not comfortable yet, check out the <a href="http://nodeguide.com/beginner.html#the-interactive-node.js-shell">nodeguide</a> above )</p></li>
+</ul>
+<p>Take the time you need to get comfortable, these pieces will be important going forward!</p>
+<p>Once we're ready, the next step will be to register an application with GitHub which will give us access to a couple pieces of important information. These pieces of information will be important during the authentication process, we'll talk about them shortly. To set this up, open the <a href="https://github.com/settings/developers">GitHub Developer Settings</a> which should take you right to the developers portion of your GitHub settings. Now, there should be a button in the top right hand corner labeled <code>Register a new application</code>. You'll want to click this, this should present you with a form to fill out to register your application. Here is an example of what the form could look like (I filled it out with some example details that you could use to follow along). Feel free to enter with any information that you would like to. You're free to set up as many of these as you like, so we can treat this one for demo purposes only, and we can delete it in the future if needed.</p>
+<p>Probably the most important piece of information in this form is the authorization callback URL. This URL is important because this is the place in our app that GitHub will call to finish the authorization process. This will need to match with what we provide. Once everything has been filled out, click the shiny green <code>Register application</code> button at the bottom to complete the registration!</p>
+<p>Once registered, GitHub is going to give us the two pieces of information we need, the <code>Client ID</code> and the <code>Client Secret</code>. It's important to note here that the <code>Client Secret</code> should never be shared with anyone, and it certainly should never be embedded in code that is being checked into GitHub nor should it be shared on the client! One way to persist these pieces of information so that they are only available on the server, and not included in the source code, is to store them into a dotfile locally on your machine. This file can then be referenced to be loaded into memory when the shell session is started. If you would like more information about this, checkout this article which goes into more depth about this subject! <a href="http://www.tricksofthetrades.net/2015/06/14/notes-bash-env-variables/">BASH Environment and Shell Variables</a>. You are going to see these variables referenced in future code snippets using <code>process.env.XXXXX</code> which is NodeJS' mechanism to access the shell environment variables.</p>
+<p>Sweet, now that we have everything we need from GitHub, we can start coding the app! To get started, we'll want to init a project from the command line. Open up your favorite terminal and go into a directory where you might host any projects and enter the following commands:</p>
+<pre><code class="sh language-sh">mkdir github-oauth-demo
+cd github-oauth-demo
+yarn init
+</code></pre>
+<p>Cool, we've initialized the project with <a href="https://yarnpkg.com">yarn</a> so we are ready to start installing some packages! The only package we're going to need is <a href="https://expressjs.com/">express</a> which will be the server framework on the Node side.</p>
+<pre><code class="sh language-sh">yarn add express
+</code></pre>
+<p>Easy peasy! Now, let's stay with the server and let's setup the code that will be needed to serve a static html page and accept requests from the client:</p>
+<p><code>index.js</code>:</p>
+<pre><code class="js language-js">const http = require('http');
+const https = require('https');
+const express = require('express');
+const app = express();
+
+const port = 1337;
+
+app.use(express.static(__dirname));
+
+const server = http.createServer(app);
+
+server.listen(port, () =&gt; {
+  console.log(`==&gt; Server is listening on port ${port}`);
+  console.log(`==&gt; 🌎  Go to localhost:${port}`);
+});
+</code></pre>
+<p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
+<p><code>index.html</code>:</p>
+<pre><code class="html language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="author" content="mike"&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"&gt;
+
+    &lt;title&gt;GitHub OAuth Demo&lt;/title&gt;
+
+    &lt;link rel="shortcut icon" href="favicon.ico" type="image/x-icon" /&gt;
+  &lt;/head&gt;
+  &lt;body class="landing"&gt;
+    &lt;header role="banner"&gt;
+      &lt;h1&gt;GitHub OAuth Demo&lt;/h1&gt;
+    &lt;/header&gt;
+
+    &lt;main role="main"&gt;
+      &lt;section&gt;
+        &lt;button&gt;Login To GitHub&lt;/button&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Ok, great! There isn't much to see here yet. We haven't added the click functionality for the button yet. Let's first quickly test this and make sure that it's running as expected... go back to the terminal, and from the project folder run <code>node index.js</code>. This should start the server on <code>localhost:1337</code>. Open the browser, and you should see the page load successfully with some text loaded. </p>
+<p>Now, let's stay with the client and add the functionality that will happen when the user clicks on the button. Basicaly, here's what is going to happen when the user clicks on the login button: the page is going to open a new popup window that will with the GitHub oauth login URL. This URL is going to provide instructions of where to callback to via the <code>redirect_uri</code>. It's also going to include the client ID that was one of the pieces of information received when registering the GitHub application earlier. </p>
+<pre><code class="js language-js">function login() {
+    // handle messages received from popup window
+    const receiveMessage = event =&gt; {
+      // Do we trust the sender of this message?
+      if (event.origin !== window.location.origin) {
+        return;
+      }
+
+      // remove the listener as we should only receive one message
+      window.removeEventListener("message", receiveMessage, false);
+
+      // close the window
+      githubWindow.close();
+
+    // listen for messages back from popup
+    window.addEventListener("message", receiveMessage, false);
+
+    // open the popup
+    const githubWindow = window.open(
+      `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&amp;scope=user%20public_repo&amp;redirect_uri=http://localhost:1337/callback`,
+      "GitHubLogin",
+      "menubar=no,location=yes,resizable=yes,status=yes,width=786,height=534"
+    );
+}
+</code></pre>
+<p>Alright, so there is a lot going on here so let's take a minute to understand what is going on. When the user clicks on the login button, it's going to call this function <code>login</code>. This is going to setup an event listener to listen for messages to this window. Next, it's going to open up a popup to the GitHub login address. As you see above, it requires that the GITHUB<em>CLIENT</em>ID is included in this call. In this example, I am going to include the CLIENT ID on the client side. However, the SECRET will never be exposed, it's going to always stay in an environment variable! Basically, what's going to happen is that we're going to use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">Post Message API</a> to message from the popup window back to the original window that opened it once we have completed the handshake to get the access token. Remember, to use the GitHub API for certain things such as reading or writing to a repository, we need the access token to be passed in the headers. So really, we just need this access token and then we are golden! There is some extra code getTokenFromString which is doing to helper work to strip out the access token from the response. You can see the full example of this code in the accompanying demo.</p>
+<p>Ok, we're really close now!. Basically now we just need to setup the endpoint on the server which will handle the callback from the github API in the popup window.</p>
+<pre><code class="js language-js">app.get("/callback", function(req, res) {
+  const data = JSON.stringify({
+    client_id: process.env.OAUTH_DEMO_GITHUB_CLIENT_ID,
+    client_secret: process.env.OAUTH_DEMO_GITHUB_CLIENT_SECRET,
+    code: req.query.code
+  });
+
+  const options = {
+    host: "github.com",
+    port: "443",
+    path: "/login/oauth/access_token",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(data)
+    }
+  };
+
+  const post_req = https.request(
+    options,
+    function(resp) {
+      resp.setEncoding("utf8");
+      resp.on("data", function(chunk) {
+        console.log("GitHub API Response: " + chunk);
+        res.send(
+          `&lt;html&gt;&lt;body&gt;&lt;script&gt;window.opener.postMessage("${chunk}", '*')&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;`
+        );
+      });
+    },
+    function(err) {
+      console.log("error", err);
+    }
+  );
+
+  post_req.write(data);
+  post_req.end();
+});
+</code></pre>
+<p>Ok, so there is a little magic that is happening here. Basically, this is being called from the popup window. It's going to pass the code from the popup to this call, which will then be used along with the client id and client secret to get the access token from GitHub. Then, it's going to use some JavaScript to post a message back to the opener with the access token. </p>
+<p>And that's a wrap! I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">here</a> in case anything in the demo did not make sense. I hope this was helpful. If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. Your feedback is most welcome!</p>
+<p>Thanks for reading!</p>
+        </section>
+      </article>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.min.js"></script>
+  </body>
+</html>
