@@ -129,5 +129,12 @@ body {
 .post main > article .post-header h6 {
   font-weight: 300;
   font-style: italic;
+  font-size: 16px;
+  font-weight: 600;
+  font-style: italic;
+  font-family: monospace;
+  text-align: center;
+  line-height: 3;
+  color: #333;
 }
 /* End Post Page */
