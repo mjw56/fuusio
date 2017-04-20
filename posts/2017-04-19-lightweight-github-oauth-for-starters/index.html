@@ -22,7 +22,7 @@
       <article role="article">
         <section aria-live="assertive" aria-atomic="true" class="post-header">
           <h1>Lightweight GitHub OAuth for Starters</h1>
-          <h6></h6>
+          <h6>April 18, 2017</h6>
         </section>
 
         <section aria-live="assertive" aria-atomic="true" class="post-body">
@@ -71,7 +71,7 @@ const server = http.createServer(app);
 
 server.listen(port, () =&gt; {
   console.log(`==&gt; Server is listening on port ${port}`);
-  console.log(`==&gt; ð  Go to localhost:${port}`);
+  console.log(`==&gt; Ã°ÂÂÂ  Go to localhost:${port}`);
 });
 </code></pre>
 <p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
@@ -102,7 +102,7 @@ server.listen(port, () =&gt; {
 &lt;/html&gt;
 </code></pre>
 <p>Ok, great! There isn't much to see here yet. We haven't added the click functionality for the button yet. Let's first quickly test this and make sure that it's running as expected... go back to the terminal, and from the project folder run <code>node index.js</code>. This should start the server on <code>localhost:1337</code>. Open the browser, and you should see the page load successfully with some text loaded. </p>
-<p>Now, let's stay with the client and add the functionality that will happen when the user clicks on the button. Basicaly, here's what is going to happen when the user clicks on the login button: the page is going to open a new popup window that will with the GitHub oauth login URL. This URL is going to provide instructions of where to callback to via the <code>redirect_uri</code>. It's also going to include the client ID that was one of the pieces of information received when registering the GitHub application earlier. </p>
+<p>Now, let's stay with the client and add the functionality that will happen when the user clicks on the button. Basically, here's what is going to happen when the user clicks on the login button: the page is going to open a new popup window that will be directed to the GitHub oauth login URL. This URL is going to provide instructions of where to callback to via the <code>redirect_uri</code>. It's also going to include the client ID that was one of the pieces of information received when registering the GitHub application earlier.</p>
 <pre><code class="js language-js">function login() {
     // handle messages received from popup window
     const receiveMessage = event =&gt; {
@@ -128,7 +128,7 @@ server.listen(port, () =&gt; {
     );
 }
 </code></pre>
-<p>Alright, so there is a lot going on here so let's take a minute to understand what is going on. When the user clicks on the login button, it's going to call this function <code>login</code>. This is going to setup an event listener to listen for messages to this window. Next, it's going to open up a popup to the GitHub login address. As you see above, it requires that the GITHUB<em>CLIENT</em>ID is included in this call. In this example, I am going to include the CLIENT ID on the client side. However, the SECRET will never be exposed, it's going to always stay in an environment variable! Basically, what's going to happen is that we're going to use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">Post Message API</a> to message from the popup window back to the original window that opened it once we have completed the handshake to get the access token. Remember, to use the GitHub API for certain things such as reading or writing to a repository, we need the access token to be passed in the headers. So really, we just need this access token and then we are golden! There is some extra code getTokenFromString which is doing to helper work to strip out the access token from the response. You can see the full example of this code in the accompanying demo.</p>
+<p>Alright, so there is a lot going on here so let's take a minute to understand what is going on. When the user clicks on the login button, it's going to call this function <code>login</code>. This is going to setup an event listener to listen for messages to this window. Next, it's going to open up a popup to the GitHub login address. This popup is where the user will accept to authorize this application, allowing them to login as themselves. As you see above, it requires that the GitHub Client ID is included in this call. In this example, I am going to include the CLIENT ID on the client side. However, the SECRET will never be exposed, it's going to always stay in an environment variable! Basically, what's going to happen is that we're going to use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">Post Message API</a> to message from the popup window back to the original window that opened it once we have completed the handshake to get the access token. Remember, to use the GitHub API for certain things such as reading or writing to a repository, we need the access token to be passed in the headers. So really, we just need this access token and then we are golden! There is some extra code getTokenFromString which is doing to helper work to strip out the access token from the response. You can see the full example of this code in the accompanying demo.</p>
 <p>Ok, we're really close now!. Basically now we just need to setup the endpoint on the server which will handle the callback from the github API in the popup window.</p>
 <pre><code class="js language-js">app.get("/callback", function(req, res) {
   const data = JSON.stringify({
@@ -168,8 +168,9 @@ server.listen(port, () =&gt; {
   post_req.end();
 });
 </code></pre>
-<p>Ok, so there is a little magic that is happening here. Basically, this is being called from the popup window. It's going to pass the code from the popup to this call, which will then be used along with the client id and client secret to get the access token from GitHub. Then, it's going to use some JavaScript to post a message back to the opener with the access token. </p>
-<p>And that's a wrap! I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">here</a> in case anything in the demo did not make sense. I hope this was helpful. If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. Your feedback is most welcome!</p>
+<p>Ok, so there is a little magic that is happening here. Basically, this route on our server is being called from the popup window as the callback. It's going to pass a code from the GitHub and the popup to this endpoint. In turn, this code will be used along with the client id and client secret to get the access token from GitHub. It will make the POST call to GitHub to obtain the access token, once it successfully completes, I embed this into the script tag of the HTML which will post the message once the page initializes. Then, the client will have the access token, and they are free to make any authorized requests on behalf of the logged in GitHub user!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>That will complete this tutorial. I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">here</a> in case anything in the article did not make sense. I hope this was helpful! If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. Your feedback is most welcome!</p>
 <p>Thanks for reading!</p>
         </section>
       </article>
