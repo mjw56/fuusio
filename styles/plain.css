@@ -73,8 +73,9 @@ body {
   color: #333;
 }
 
-.post header a:hover {
-  opacity: 0.85;
+.post a:hover {
+  opacity: 0.25;
+  cursor: pointer;
 }
 
 .post main {
