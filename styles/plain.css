@@ -6,8 +6,9 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
-  font-family: "Helvetica Neue";
-  font-weight: 100;
+  font-family: "sans-serif";
+  font-weight: 300;
+  font-size: 18px;
   height: 100%;
 }
 
@@ -55,10 +56,12 @@ body {
   display: flex;
   align-items: center;
   margin-left: 30px;
+  padding: 30px;
 }
 
 .post header a {
   text-decoration: none;
+  color: #333;
 }
 
 .post header a:hover {
@@ -101,6 +104,11 @@ body {
 
 .post main > article .post-header {
   text-align: left;
+}
+
+.post main > article .post-header h1 {
+  font-size: 40px;
+  text-align: center;
 }
 
 .post main > article .post-header h1,
