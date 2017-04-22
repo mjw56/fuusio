@@ -72,7 +72,7 @@ const server = http.createServer(app);
 
 server.listen(port, () =&gt; {
   console.log(`==&gt; Server is listening on port ${port}`);
-  console.log(`==&gt; ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ  Go to localhost:${port}`);
+  console.log(`==&gt; ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ  Go to localhost:${port}`);
 });
 </code></pre>
 <p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
@@ -171,8 +171,8 @@ server.listen(port, () =&gt; {
 </code></pre>
 <p>So what is happening here? Basically, this route on the server will be called from the popup window as part of the callback URL. It's going to pass a code from GitHub. In turn, this code is going to be used along with the Client Id and Client Secret to get the access token from GitHub. We will then make a POST call to GitHub server to obtain the access token. Once this call successfully completes, the token obtained will be embedded into some markup which will be sent back to the popup window. Then, when this markup is run, it's going to message back to the parent opener window with the access token that we just embedded. Once the original parent window hears this message, the client will then have the access token, and can then make any authorized request(s) on behalf of the logged in GitHub user! Pretty cool, yeah?</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>This concludes part I of this series! I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">here</a> in case anything in the article did not make sense. I hope this was helpful! If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. I appreciate any and all feedback as it helps me to understand things people might enjoy or things that people don't quite understand.</p>
-<p>I'm trying out a new system for doing comments. I've setup comments so that you can comment on the issue for this post.</p>
+<p>This concludes part I of this series! I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">on GitHub</a> in case anything in the article did not make sense. I hope this was helpful! If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. I appreciate any and all feedback as it helps me to understand things people might enjoy or things that people don't quite understand.</p>
+<p>I'm trying out a new system for doing comments. I've setup comments so that you can comment on the issue for this post. Please feel free to leave a comment on the issue.</p>
 <p>Thanks for reading, have a great day!</p>
         </section>
         <section id="gh-comments-list"></section>
@@ -182,32 +182,34 @@ server.listen(port, () =&gt; {
       const url = `https://github.com/mjw56/fuusio/issues/2017-04-19-lightweight-github-oauth-for-starters`;
       const api_url = `https://api.github.com/repos/mjw56/fuusio/issues/2017-04-19-lightweight-github-oauth-for-starters/comments`;
 
-      $(document).ready(function () {
-          $.ajax(api_url, {
-              headers: {Accept: "application/vnd.github.v3.html+json"},
-              dataType: "json",
-              success: function(comments) {
-                  $("#gh-comments-list").append("Visit the <b><a href='" + url + "'>Github Issue</a></b> to comment on this post");
-                  $.each(comments, function(i, comment) {
+        document.addEventListener("DOMContentLoaded", function(event) {
+          fetch(api_url, { Accept: 'application/vnd.github.v3.html+json'})
+            .then(res => res.json())
+            .then(comments => {
+                  document.getElementById("#gh-comments-list")
+                    .appendChild(
+                      document.createTextNode(`Visit the <b><a href="${url}">Github Issue</a></b> to comment on this post`)
+                    );
 
+                  comments.forEach(function(comment, i) {
                       var date = new Date(comment.created_at);
 
-                      var t = "<div id='gh-comment'>";
-                      t += "<img src='" + comment.user.avatar_url + "' width='24px'>";
-                      t += "<b><a href='" + comment.user.html_url + "'>" + comment.user.login + "</a></b>";
-                      t += " posted at ";
-                      t += "<em>" + date.toUTCString() + "</em>";
-                      t += "<div id='gh-comment-hr'></div>";
-                      t += comment.body_html;
-                      t += "</div>";
-                      $("#gh-comments-list").append(t);
+                      const t = `
+                        <div id="gh-comment">
+                          <img src="${comment.user.avatar_url}" width="24px">
+                          <b><a href="${comment.user.html_url}">${comment.user.login}</a></b>
+                          posted at <em>${date.toUTCString()}</em>
+                          <div id="gh-comment-hr"></div>
+                          ${comment.body_html}
+                        </div>`;
+
+                      document.getElementById("#gh-comments-list").innerHTML = `${document.getElementById("#gh-comments-list").innerHTML}${t}`;
                   });
-              },
-              error: function() {
-                  $("#gh-comments-list").append("Comments are not open for this post yet.");
-              }
-          });
-      });
+            })
+            .catch(_ => {
+              document.getElementById('#gh-comments-list').appendChild(document.createTextNode('Comments are not open for this post yet.'));
+            });
+        });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.min.js"></script>
   </body>
