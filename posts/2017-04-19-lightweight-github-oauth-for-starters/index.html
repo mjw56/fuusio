@@ -170,7 +170,7 @@ server.listen(port, () =&gt; {
   post_req.end();
 });
 </code></pre>
-<p>So what is happening here? Basically, this route on the server will be called from the popup window as part of the callback URL. It's going to pass a code from GitHub. In turn, this code is going to be used along with the Client Id and Client Secret to get the access token from GitHub. We will then make a POST call to GitHub server to obtain the access token. Once this call successfully completes, the token obtained will be embedded into some markup which will be sent back to the popup window. Then, when this markup is run, it's going to message back to the parent opener window with the access token that we just embedded. Once the original parent window hears this message, the client will then have the access token, and can then make any authorized request(s) on behalf of the logged in GitHub user! Pretty cool, yeah?</p>
+<p>So what is happening here? Basically, this route on the server will be called from the popup window as part of the callback URL. It's going to pass a code from GitHub. In turn, this code is going to be used along with the Client ID and Client Secret. They'll be used when making a POST call to the GitHub server to obtain the access token. Once this call successfully completes, I am embedding the token obtained into the markup which will be sent back to the popup window. Then, when this markup is run in the browser, it's going to call the JavaScript which will message back to the parent opener window with the access token that we just embedded. Once the original parent window hears this message, the client will then have the access token, and can then make any authorized request(s) on behalf of the logged in GitHub user! Pretty cool, yeah!?</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>This concludes part I of this series! I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">on GitHub</a> in case anything in the article did not make sense. I hope this was helpful! If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. I appreciate any and all feedback as it helps me to understand things people might enjoy or things that people don't quite understand.</p>
 <p>I'm trying out a new system for doing comments! I've setup comments so that you can simply comment on the issue for this post, and it will show up below. Please feel free to leave a comment on the issue!</p>
@@ -180,8 +180,8 @@ server.listen(port, () =&gt; {
       </article>
     </main>
     <script>
-      const url = `https://github.com/mjw56/fuusio/issues/2017-04-19-lightweight-github-oauth-for-starters`;
-      const api_url = `https://api.github.com/repos/mjw56/fuusio/issues/2017-04-19-lightweight-github-oauth-for-starters/comments`;
+      const url = `https://github.com/mjw56/fuusio/issues/1`;
+      const api_url = `https://api.github.com/repos/mjw56/fuusio/issues/1/comments`;
 
         document.addEventListener("DOMContentLoaded", function(event) {
           fetch(api_url, { Accept: 'application/vnd.github.v3.html+json'})
