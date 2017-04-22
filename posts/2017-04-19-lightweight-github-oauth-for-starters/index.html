@@ -27,7 +27,7 @@
 
         <section aria-live="assertive" aria-atomic="true" class="post-body">
           <p><em>Note: This post is geared towards developers who may not have much experience with implementing an OAuth workflow using GitHub before. This will walk through my implementation of the workflow.</em></p>
-<p><em>Note II: This is part I of a multi-part series. This introductory article will explain the initial OAuth handshake and how to obtain an access token. In subsequent article(s), I will explore how the access token can be used to make calls to the GitHub API to perform tasks on behalf of the authenticated GitHub user.</em> </p>
+<p><em>Note II: This is part I of a multi-part series. This introductory article will explain the initial OAuth handshake and how to obtain an access token from GitHub. In subsequent article(s), I will explore how the access token can be used to make calls to the GitHub API to perform tasks on behalf of an authenticated GitHub user.</em> </p>
 <p>During this post, these technologies will be covered:</p>
 <ul>
 <li>HTML</li>
@@ -72,7 +72,7 @@ const server = http.createServer(app);
 
 server.listen(port, () =&gt; {
   console.log(`==&gt; Server is listening on port ${port}`);
-  console.log(`==&gt; ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ  Go to localhost:${port}`);
+  console.log(`==&gt; ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ  Go to localhost:${port}`);
 });
 </code></pre>
 <p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
@@ -186,7 +186,7 @@ server.listen(port, () =&gt; {
           fetch(api_url, { Accept: 'application/vnd.github.v3.html+json'})
             .then(res => res.json())
             .then(comments => {
-                  document.getElementById("#gh-comments-list")
+                  document.getElementById("gh-comments-list")
                     .appendChild(
                       document.createTextNode(`Visit the <b><a href="${url}">Github Issue</a></b> to comment on this post`)
                     );
@@ -203,11 +203,11 @@ server.listen(port, () =&gt; {
                           ${comment.body_html}
                         </div>`;
 
-                      document.getElementById("#gh-comments-list").innerHTML = `${document.getElementById("#gh-comments-list").innerHTML}${t}`;
+                      document.getElementById("gh-comments-list").innerHTML = `${document.getElementById("gh-comments-list").innerHTML}${t}`;
                   });
             })
             .catch(_ => {
-              document.getElementById('#gh-comments-list').appendChild(document.createTextNode('Comments are not open for this post yet.'));
+              document.getElementById('gh-comments-list').appendChild(document.createTextNode('Comments are not open for this post yet.'));
             });
         });
     </script>
