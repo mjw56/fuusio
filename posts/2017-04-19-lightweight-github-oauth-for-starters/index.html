@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="white">
 
-    <title>Lightweight GitHub OAuth for Starters Part I</title>
+    <title>Lightweight GitHub OAuth for Starters - Part I</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/themes/prism-okaidia.min.css">
     <link rel="stylesheet" href="../../styles/plain.css">
@@ -21,7 +21,7 @@
     <main role="main">
       <article role="article">
         <section aria-live="assertive" aria-atomic="true" class="post-header">
-          <h1>Lightweight GitHub OAuth for Starters Part I</h1>
+          <h1>Lightweight GitHub OAuth for Starters - Part I</h1>
           <h6>April 18, 2017</h6>
         </section>
 
@@ -30,20 +30,20 @@
 <p><em>Note II: This is part I of a multi-part series. This introductory article will explain the initial OAuth handshake and how to obtain an access token. In subsequent article(s), I will explore how the access token can be used to make calls to the GitHub API to perform tasks on behalf of the authenticated GitHub user.</em> </p>
 <p>During this post, these technologies will be covered:</p>
 <ul>
+<li>HTML</li>
 <li>JavaScript</li>
 <li>NodeJS and yarn</li>
-<li>HTML</li>
 </ul>
 <p>If you're not comfortable yet with these technologies here are some links which might help you getting started:</p>
 <ul>
 <li><p><a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML">Intro to HTML</a></p></li>
 <li><p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Introduction">Intro to JavaScript</a></p></li>
-<li><p><a href="http://nodeguide.com/beginner.html">nodeguide</a></p></li>
+<li><p><a href="https://nodeschool.io/">nodeschool.io</a></p></li>
 </ul>
 <p>This post also assumes two things:</p>
 <ul>
 <li><p>that you have a GitHub account, if you don't have one, you should sign up! It is free! <a href="https://help.github.com/articles/signing-up-for-a-new-github-account/">GitHub Sign Up</a></p></li>
-<li><p>that you are comfortable working in a command line terminal to use NodeJS/git ( if you're not comfortable yet, check out the <a href="http://nodeguide.com/beginner.html#the-interactive-node.js-shell">nodeguide</a> above )</p></li>
+<li><p>that you are comfortable working in a command line terminal to use NodeJS/git ( if you're not comfortable yet, check out the <a href="https://nodeschool.io/">nodeschool.io</a> above )</p></li>
 </ul>
 <p>Take the time you need to get comfortable, these pieces will be important going forward!</p>
 <p>Once we're ready, the next step will be to register an application with GitHub which will give us access to a couple pieces of important information. These pieces of information will be important during the authentication process, we'll talk about them shortly. To set this up, open the <a href="https://github.com/settings/developers">GitHub Developer Settings</a> which should take you right to the developers portion of your GitHub settings. Now, there should be a button in the top right hand corner labeled <code>Register a new application</code>. You'll want to click this, this should present you with a form to fill out to register your application. Here is an example of what the form could look like (I filled it out with some example details that you could use to follow along). Feel free to enter with any information that you would like to. You're free to set up as many of these as you like, so we can treat this one for demo purposes only, and we can delete it in the future if needed.</p>
@@ -72,7 +72,7 @@ const server = http.createServer(app);
 
 server.listen(port, () =&gt; {
   console.log(`==&gt; Server is listening on port ${port}`);
-  console.log(`==&gt; ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂ  Go to localhost:${port}`);
+  console.log(`==&gt; ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ  Go to localhost:${port}`);
 });
 </code></pre>
 <p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
@@ -169,31 +169,46 @@ server.listen(port, () =&gt; {
   post_req.end();
 });
 </code></pre>
-<p>Ok, so there is a little magic that is happening here. Basically, this route on our server will be called from the popup window as part of the callback URL. It's going to pass a code from GitHub as the first part of the handshake for the OAuth. In turn, this code is going to be used along with the Client Id and Client Secret to get the access token from GitHub. We will then make a POST call to GitHub server to obtain the access token. Once this call successfully completes, the token obtained will be embedded into some markup which will be sent back to the popup window. Then, when this markup is run, it's going to message back to the parent opener window with the access token that we just embedded. Once the original parent window hears this message, the client will then have the access token, and can then make any authorized request(s) on behalf of the logged in GitHub user! Pretty cool, yeah?</p>
+<p>So what is happening here? Basically, this route on the server will be called from the popup window as part of the callback URL. It's going to pass a code from GitHub. In turn, this code is going to be used along with the Client Id and Client Secret to get the access token from GitHub. We will then make a POST call to GitHub server to obtain the access token. Once this call successfully completes, the token obtained will be embedded into some markup which will be sent back to the popup window. Then, when this markup is run, it's going to message back to the parent opener window with the access token that we just embedded. Once the original parent window hears this message, the client will then have the access token, and can then make any authorized request(s) on behalf of the logged in GitHub user! Pretty cool, yeah?</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>That will complete this tutorial for right now. I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">here</a> in case anything in the article did not make sense. I hope this was helpful! If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. I appreciate any and all feedback as it helps me to understand things people might enjoy or things that people don't quite understand. Also, I have included a Disqus comments section below that you can feel free to leave comments on! I will monitor the comments and respond here.</p>
+<p>This concludes part I of this series! I have the full solution posted <a href="https://github.com/mjw56/github-oauth-demo">here</a> in case anything in the article did not make sense. I hope this was helpful! If there is anything that did not make sense, please feel free to reach out with any questions or comments you might have. I appreciate any and all feedback as it helps me to understand things people might enjoy or things that people don't quite understand.</p>
+<p>I'm trying out a new system for doing comments. I've setup comments so that you can comment on the issue for this post.</p>
 <p>Thanks for reading, have a great day!</p>
         </section>
-        <section id="disqus_thread"></section>
+        <section id="gh-comments-list"></section>
       </article>
     </main>
-   
     <script>
-        var disqus_config = function () {
-            this.page.url = 'https://blog.mikewilcox.im/posts/2017-04-19-lightweight-github-oauth-for-starters/index.html';
-            this.page.identifier = '2017-04-19-lightweight-github-oauth-for-starters';
-        };
+      const url = `https://github.com/mjw56/fuusio/issues/2017-04-19-lightweight-github-oauth-for-starters`;
+      const api_url = `https://api.github.com/repos/mjw56/fuusio/issues/2017-04-19-lightweight-github-oauth-for-starters/comments`;
 
-        (function() {
-            var d = document, s = d.createElement('script');
-            
-            s.src = 'https://codeontheedge.disqus.com/embed.js';
-            
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-        })();
+      $(document).ready(function () {
+          $.ajax(api_url, {
+              headers: {Accept: "application/vnd.github.v3.html+json"},
+              dataType: "json",
+              success: function(comments) {
+                  $("#gh-comments-list").append("Visit the <b><a href='" + url + "'>Github Issue</a></b> to comment on this post");
+                  $.each(comments, function(i, comment) {
+
+                      var date = new Date(comment.created_at);
+
+                      var t = "<div id='gh-comment'>";
+                      t += "<img src='" + comment.user.avatar_url + "' width='24px'>";
+                      t += "<b><a href='" + comment.user.html_url + "'>" + comment.user.login + "</a></b>";
+                      t += " posted at ";
+                      t += "<em>" + date.toUTCString() + "</em>";
+                      t += "<div id='gh-comment-hr'></div>";
+                      t += comment.body_html;
+                      t += "</div>";
+                      $("#gh-comments-list").append(t);
+                  });
+              },
+              error: function() {
+                  $("#gh-comments-list").append("Comments are not open for this post yet.");
+              }
+          });
+      });
     </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.min.js"></script>
   </body>
 </html>
