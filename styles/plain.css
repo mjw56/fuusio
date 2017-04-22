@@ -142,4 +142,36 @@ body {
   line-height: 3;
   color: #333;
 }
+
+.post main > article .post-comments {
+  text-align: left;
+}
+
+.post main > article .post-comments img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+}
+
+.post main > article .post-comments .gh-comment {
+  border: 1px solid #333;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.post main > article .post-comments .gh-comment .header {
+  display: flex;
+  align-items: center;
+}
+
+.post main > article .post-comments .gh-comment .header .meta {
+  margin-left: 15px;
+  font-size: 14px;
+  display: grid;
+}
+
+.post main > article .post-comments .gh-comment .header .meta a {
+  line-height: 2;
+}
 /* End Post Page */
