@@ -3,6 +3,7 @@ html {
 }
 
 body {
+  background-color: rgb(255, 254, 250);
   color: #333;
   margin: 0;
   padding: 0;
@@ -103,18 +104,27 @@ body {
 }
 
 .post main > article .post-body {
+  font-family: 'Cormorant Garamond', serif;
   text-align: left;
   line-height: 1.5;
 }
 
 .post main > article .post-body a {
   text-decoration: none;
-  color: inherit;
-  border-bottom: 0.1px solid #333;
+  color: hotpink;
+  border-bottom: 0.1px solid hotpink;
 }
 
 .post main > article .post-body pre {
   font-size: 10px;
+}
+
+.post main > article .post-body p code {
+    font-size: 14px;
+    background-color: #333;
+    color: white;
+    padding: 2px 5px 2px 5px;
+    border-radius: 3px;
 }
 
 .post main > article .post-header {
@@ -122,6 +132,8 @@ body {
 }
 
 .post main > article .post-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
   font-size: 40px;
   text-align: center;
 }
