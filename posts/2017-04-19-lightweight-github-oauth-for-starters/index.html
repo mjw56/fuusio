@@ -22,8 +22,9 @@
     <main role="main">
       <article role="article">
         <section aria-live="assertive" aria-atomic="true" class="post-header">
+          <div class="date">April 18, 2017</div>
           <h1>Lightweight GitHub OAuth for Starters - Part I</h1>
-          <h6>April 18, 2017</h6>
+          <div class="author">by <span>Mike Wilcox</span></div>
         </section>
 
         <section aria-live="assertive" aria-atomic="true" class="post-body">
@@ -76,8 +77,8 @@ server.listen(port, () =&gt; {
   console.log(`==&gt; Go to localhost:${port}`);
 });
 </code></pre>
-<p>Ok, this is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. </p>
-<p>Ok, let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
+<p>This is the most basic necessary code that we need to get going and serve up static files. In our case, the only static asset that we will be serving up will be an <code>index.html</code> file that will be the basis of our demo. So basically, the code above is what accomplishes that. </p>
+<p>Let's add the <code>index.html</code> file really quick since we have the server code setup. We can then test it out and make sure the server is serving up everything smoothly.</p>
 <p><strong><em>index.html</em></strong>:</p>
 <pre><code class="html language-html">&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
